@@ -1,4 +1,5 @@
 import { AppInitializer, Router } from "@common-module/app";
+import PhysicsTestView from "./physics/PhysicsTestView.js";
 import PlatformerView from "./platformer/PlatformerView.js";
 import RenderingBenchmarkView from "./rendering-benchmark/RenderingBenchmarkView.js";
 import SpineTestView from "./spine/SpineTestView.js";
@@ -15,4 +16,5 @@ export default async function initialize() {
   Router.route("rendering-benchmark", RenderingBenchmarkView);
   Router.route("delete-texture", DeleteTextureTestView);
   Router.route("spine", SpineTestView);
+  Router.route("physics", PhysicsTestView);
 }

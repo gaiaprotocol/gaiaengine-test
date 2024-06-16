@@ -1,26 +1,21 @@
 import { BodyNode, View, ViewParams } from "@common-module/app";
-import { Image, Screen } from "@gaiaengine/gaiaengine";
+import { Image, Node, Screen } from "@gaiaengine/gaiaengine";
 
 export default class DeleteTextureTestView extends View {
   constructor(params: ViewParams) {
     super();
 
-    let screen;
+    let container;
     BodyNode.append(
-      screen = new Screen(500, 500, new Image(0, 0, "/assets/cat.png")),
+      new Screen(500, 500, container = new Node(0, 0)),
     );
 
-    setTimeout(() => {
-      screen.root.empty();
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.empty();
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-      screen.root.empty();
-      screen.root.append(new Image(0, 0, "/assets/cat.png"));
-    }, 1000);
+    setInterval(() => {
+      for (let i = 0; i < 100; i++) {
+        Math.random() < 0.5
+          ? container.empty()
+          : container.append(new Image(0, 0, "/assets/cat.png"));
+      }
+    }, 100);
   }
 }

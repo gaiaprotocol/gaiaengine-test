@@ -1,5 +1,5 @@
 import { BodyNode, View, ViewParams } from "@common-module/app";
-import { FpsDisplay, Image, Node, Screen } from "@gaiaengine/gaiaengine";
+import { FpsDisplay, Image, Node, Screen } from "@gaiaengine/2d";
 
 class Cat extends Node {
   constructor(x: number, y: number) {

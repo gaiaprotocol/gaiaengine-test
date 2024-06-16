@@ -1,5 +1,5 @@
 import { BodyNode, View, ViewParams } from "@common-module/app";
-import { Image, Node, Screen } from "@gaiaengine/gaiaengine";
+import { Image, Node, Screen } from "@gaiaengine/2d";
 
 export default class DeleteTextureTestView extends View {
   constructor(params: ViewParams) {

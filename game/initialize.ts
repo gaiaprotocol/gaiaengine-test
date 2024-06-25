@@ -1,6 +1,9 @@
 import { AppInitializer, Router } from "@common-module/app";
 import PhysicsTestView from "./physics/PhysicsTestView.js";
 import PlatformerView from "./platformer/PlatformerView.js";
+import RenderingBenchmarkDom2View from "./rendering-benchmark/RenderingBenchmarkDom2View.js";
+import RenderingBenchmarkDom3View from "./rendering-benchmark/RenderingBenchmarkDom3View.js";
+import RenderingBenchmarkDomView from "./rendering-benchmark/RenderingBenchmarkDomView.js";
 import RenderingBenchmarkView from "./rendering-benchmark/RenderingBenchmarkView.js";
 import SpineTestView from "./spine/SpineTestView.js";
 import DeleteTextureTestView from "./testview/DeleteTextureTestView.js";
@@ -14,6 +17,9 @@ export default async function initialize() {
   Router.route("letterboxed", LetterboxedScreenTestView);
   Router.route("platformer", PlatformerView);
   Router.route("rendering-benchmark", RenderingBenchmarkView);
+  Router.route("rendering-benchmark-dom", RenderingBenchmarkDomView);
+  Router.route("rendering-benchmark-dom2", RenderingBenchmarkDom2View);
+  Router.route("rendering-benchmark-dom3", RenderingBenchmarkDom3View);
   Router.route("delete-texture", DeleteTextureTestView);
   Router.route("spine", SpineTestView);
   Router.route("physics", PhysicsTestView);

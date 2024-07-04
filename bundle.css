@@ -1363,4 +1363,17 @@ button.component.disabled {
   max-width: 100%;
   border-radius: 8px;
 }
+.map-test-view > footer {
+  height: 49px;
+  display: flex;
+  gap: 10px;
+  padding: 0 10px;
+}
+.map-test-view > footer > .input {
+  flex-direction: row;
+  align-items: center;
+}
+.map-test-view > footer > .input > input {
+  width: 60px;
+}
 

@@ -1,5 +1,5 @@
 import { BodyNode, View, ViewParams } from "@common-module/app";
-import { ColliderType, FpsDisplay, Fullscreen, Image } from "@gaiaengine/2d";
+import { ColliderType, FpsDisplay, Fullscreen, Sprite } from "@gaiaengine/2d";
 import { PhysicsNode, PhysicsWorld } from "@gaiaengine/2d-physics";
 
 class Ground extends PhysicsNode {
@@ -11,7 +11,7 @@ class Ground extends PhysicsNode {
       width: 640,
       height: 123,
     }, true);
-    this.append(new Image(0, 0, "/assets/ground.png"));
+    this.append(new Sprite(0, 0, "/assets/ground.png"));
   }
 }
 
@@ -23,7 +23,7 @@ class StaticCat extends PhysicsNode {
       y: 0,
       radius: 32,
     }, true);
-    this.append(new Image(0, 0, "/assets/cat.png"));
+    this.append(new Sprite(0, 0, "/assets/cat.png"));
   }
 }
 
@@ -35,7 +35,7 @@ class Cat extends PhysicsNode {
       y: 0,
       radius: 32,
     });
-    this.append(new Image(0, 0, "/assets/cat.png"));
+    this.append(new Sprite(0, 0, "/assets/cat.png"));
   }
 }
 

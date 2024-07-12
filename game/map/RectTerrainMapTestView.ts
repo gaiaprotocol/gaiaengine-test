@@ -48,8 +48,9 @@ export default class RectTerrainMapTestView extends View {
             },
           },
           mapData.terrains,
-          mapData.terrainMap,
           mapData.objects,
+          mapData.terrainMap,
+          mapData.mapObjects,
         ),
       ),
       el(

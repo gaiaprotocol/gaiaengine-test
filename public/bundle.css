@@ -517,6 +517,9 @@ button.component.disabled {
   max-width: 36px;
   max-height: 36px;
 }
+.app-nav-bar.component:not(:has(h1)) > ul {
+  padding-top: 21px;
+}
 .app-nav-bar.component > ul {
   flex-grow: 1;
   display: flex;

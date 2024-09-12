@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "webpack-dev": "webpack --mode development --watch --config webpack.config.development.cjs",
-    "webpack-prod": "webpack --mode production --config webpack.config.production.cjs",
+    "webpack-dev": "webpack --mode development --watch --config webpack.config.dev.cjs",
+    "webpack-prod": "webpack --mode production --config webpack.config.prod.cjs",
     "predeploy": "yarn webpack-prod",
     "deploy": "gh-pages -d public"
   },
@@ -9,7 +9,8 @@
   "dependencies": {
     "@gaiaengine/2d": "^0.0.5",
     "@gaiaengine/2d-spine": "^0.0.5",
-    "@gaiaengine/2d-physics": "^0.0.5"
+    "@gaiaengine/2d-physics": "^0.0.5",
+    "@gaiaengine/2d-joystick": "^0.0.1"
   },
   "devDependencies": {
     "assert": "^2.0.0",

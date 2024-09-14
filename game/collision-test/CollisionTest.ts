@@ -62,7 +62,7 @@ export default class CollisionTest extends View<Fullscreen> {
     super();
     this.container = new Fullscreen().appendTo(BodyNode);
 
-    /*this.heros = Array.from({ length: 10 }, () =>
+    this.heros = Array.from({ length: 10 }, () =>
       new Hero(
         IntegerUtils.random(
           -this.container.width / 2,
@@ -72,7 +72,7 @@ export default class CollisionTest extends View<Fullscreen> {
           -this.container.height / 2,
           this.container.height / 2,
         ),
-      ));*/
+      ));
 
     this.hero = new Hero(0, 0);
     this.heros.push(this.hero);
@@ -81,12 +81,8 @@ export default class CollisionTest extends View<Fullscreen> {
       ...this.heros,
       new Interval(1, () => this.createBullet()),
       new AnalogJoystick(
-        (angle) => {
-          console.log("onMove", angle);
-        },
-        () => {
-          console.log("onRelease");
-        },
+        (angle) => this.hero.move(angle, 200),
+        () => this.hero.stop(),
       ),
       new CollisionDetector(this.heros, this.bullets, (hero, bullet) => {
         if (hero === this.hero) {

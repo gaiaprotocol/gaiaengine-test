@@ -45,11 +45,18 @@ class Bullet extends Movable implements Collidable {
   constructor(x: number, y: number) {
     super(x, y);
     this.append(new Sprite(0, 0, "/assets/bullet.png"));
-    this.speedX = -500;
+    this.speedX = -1000;
 
     this.append(
       new EllipseNode(0, 0, 40, 40, undefined, { width: 2, color: 0xff0000 }),
     );
+  }
+
+  public update(delta: number) {
+    super.update(delta);
+    if (this.screen && this.x < -this.screen.width / 2) {
+      this.remove();
+    }
   }
 }
 
@@ -62,7 +69,7 @@ export default class CollisionTest extends View<Fullscreen> {
     super();
     this.container = new Fullscreen().appendTo(BodyNode);
 
-    this.heros = Array.from({ length: 10 }, () =>
+    this.heros = Array.from({ length: 100 }, () =>
       new Hero(
         IntegerUtils.random(
           -this.container.width / 2,
@@ -79,7 +86,7 @@ export default class CollisionTest extends View<Fullscreen> {
 
     this.container.root.append(
       ...this.heros,
-      new Interval(1, () => this.createBullet()),
+      new Interval(0.1, () => this.createBullet()),
       new AnalogJoystick(
         (angle) => this.hero.move(angle, 200),
         () => this.hero.stop(),

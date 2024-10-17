@@ -7,10 +7,11 @@
   },
   "type": "module",
   "dependencies": {
+    "@common-module/app-components": "^0.0.1",
     "@gaiaengine/2d": "^0.0.5",
-    "@gaiaengine/2d-spine": "^0.0.5",
+    "@gaiaengine/2d-joystick": "^0.0.1",
     "@gaiaengine/2d-physics": "^0.0.5",
-    "@gaiaengine/2d-joystick": "^0.0.1"
+    "@gaiaengine/2d-spine": "^0.0.5"
   },
   "devDependencies": {
     "assert": "^2.0.0",

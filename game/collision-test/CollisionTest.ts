@@ -12,7 +12,7 @@ import {
   Sprite,
 } from "@gaiaengine/2d";
 import { AnalogJoystick } from "@gaiaengine/2d-joystick";
-import { IntegerUtils } from "../../../ts-module/lib/index.js";
+import { IntegerUtils } from "@common-module/ts";
 
 class Hero extends Movable implements Collidable {
   public colliders: Collider[] = [{
@@ -60,7 +60,7 @@ class Bullet extends Movable implements Collidable {
   }
 }
 
-export default class CollisionTest extends View<Fullscreen> {
+export default class CollisionTest extends View<{}, Fullscreen> {
   private hero: Hero;
   private heros: Hero[] = [];
   private bullets: Bullet[] = [];

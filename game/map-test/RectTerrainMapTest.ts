@@ -8,7 +8,7 @@ import spritesheetWithoutAlphaData from "./spritesheet-without-alpha.json" asser
   type: "json",
 };
 
-export default class RectTerrainMapTest extends View<Fullscreen> {
+export default class RectTerrainMapTest extends View<{}, Fullscreen> {
   private transformStore = new Store("rect-terrain-map-test-transform");
 
   private zoom = 1;

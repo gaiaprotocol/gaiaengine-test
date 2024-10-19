@@ -10,13 +10,13 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./public/style/main.less":
-/*!********************************!*\
-  !*** ./public/style/main.less ***!
-  \********************************/
+/***/ "./docs/style/main.less":
+/*!******************************!*\
+  !*** ./docs/style/main.less ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack:///./public/style/main.less?");
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack:///./docs/style/main.less?");
 
 /***/ })
 
@@ -43,7 +43,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./public/style/main.less"](0, __webpack_exports__, __webpack_require__);
+/******/ 	__webpack_modules__["./docs/style/main.less"](0, __webpack_exports__, __webpack_require__);
 /******/ 	
 /******/ })()
 ;

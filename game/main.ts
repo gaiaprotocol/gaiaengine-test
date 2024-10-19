@@ -1,13 +1,20 @@
 import { Router, SPAInitializer } from "@common-module/app";
-import CollisionTest from "./collision-test/CollisionTest.js";
+import CollisionTest2D from "./2d/collision-test/CollisionTest.js";
+import RectTerrainMapTest2D from "./2d/map-test/RectTerrainMapTest.js";
+import AnimatedSpriteTestDom from "./dom/image/AnimatedSpriteTest.js";
+import SpriteTestDom from "./dom/image/SpriteTest.js";
 import IndexView from "./IndexView.js";
-import RectTerrainMapTest from "./map-test/RectTerrainMapTest.js";
 
 (() => {
   SPAInitializer.init();
 
+  Router.add("/", IndexView);
+
   Router
-    .add("/", IndexView)
-    .add("/collision", CollisionTest)
-    .add("/rect-terrain-map", RectTerrainMapTest);
+    .add("/2d/collision", CollisionTest2D)
+    .add("/2d/rect-terrain-map", RectTerrainMapTest2D);
+
+  Router
+    .add("/dom/image/sprite", SpriteTestDom)
+    .add("/dom/image/animated-sprite", AnimatedSpriteTestDom);
 })();

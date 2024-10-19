@@ -9,13 +9,23 @@ export default class IndexView extends View {
       new ButtonGroup(
         new Button({
           type: ButtonType.Outlined,
-          title: "Collision Test",
-          onClick: () => Router.go("/collision"),
+          title: "Collision Test (2D)",
+          onClick: () => Router.go("/2d/collision"),
         }),
         new Button({
           type: ButtonType.Outlined,
-          title: "Rect Terrain Map Test",
-          onClick: () => Router.go("/rect-terrain-map"),
+          title: "Rect Terrain Map Test (2D)",
+          onClick: () => Router.go("/2d/rect-terrain-map"),
+        }),
+        new Button({
+          type: ButtonType.Outlined,
+          title: "Sprite Test (DOM)",
+          onClick: () => Router.go("/dom/image/sprite"),
+        }),
+        new Button({
+          type: ButtonType.Outlined,
+          title: "Animated Sprite Test (DOM)",
+          onClick: () => Router.go("/dom/image/animated-sprite"),
         }),
       ),
     ).appendTo(BodyNode);

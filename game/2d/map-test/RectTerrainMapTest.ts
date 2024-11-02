@@ -1,10 +1,10 @@
 import { BodyNode, Store, View } from "@common-module/app";
 import { Fullscreen, RectTerrainMap } from "@gaiaengine/2d";
-import mapData from "./map.json" assert { type: "json" };
-import spritesheetWithAlphaData from "./spritesheet-with-alpha.json" assert {
+import mapData from "./map.json" with { type: "json" };
+import spritesheetWithAlphaData from "./spritesheet-with-alpha.json" with {
   type: "json",
 };
-import spritesheetWithoutAlphaData from "./spritesheet-without-alpha.json" assert {
+import spritesheetWithoutAlphaData from "./spritesheet-without-alpha.json" with {
   type: "json",
 };
 

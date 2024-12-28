@@ -67,7 +67,7 @@ export default class CollisionTest extends View<{}, Fullscreen> {
 
   constructor() {
     super();
-    this.container = new Fullscreen().appendTo(BodyNode);
+    this.container = new Fullscreen({}).appendTo(BodyNode);
 
     this.heros = Array.from({ length: 100 }, () =>
       new Hero(
@@ -93,7 +93,7 @@ export default class CollisionTest extends View<{}, Fullscreen> {
       ),
       new CollisionDetector(this.heros, this.bullets, (hero, bullet) => {
         if (hero === this.hero) {
-          console.log(hero.absoluteTransform, bullet.absoluteTransform);
+          console.log(hero.globalTransform, bullet.globalTransform);
           console.log("hero hit");
         } else {
           console.log("dummy hero hit");

@@ -24,6 +24,11 @@ export default class IndexView extends View {
         }),
         new Button({
           type: ButtonType.Outlined,
+          title: "Spine Performance Test (2D)",
+          onClick: () => Router.go("/2d/spine-performance"),
+        }),
+        new Button({
+          type: ButtonType.Outlined,
           title: "Sprite Test (DOM)",
           onClick: () => Router.go("/dom/image/sprite"),
         }),

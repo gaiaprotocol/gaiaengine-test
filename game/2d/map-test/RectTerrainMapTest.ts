@@ -2,10 +2,10 @@ import { BodyNode, Store, View } from "@common-module/app";
 import { Fullscreen, RectTerrainMap } from "@gaiaengine/2d";
 import mapData from "./map.json" with { type: "json" };
 import spritesheetWithAlphaData from "./spritesheet-with-alpha.json" with {
-  type: "json",
+  type: "json"
 };
 import spritesheetWithoutAlphaData from "./spritesheet-without-alpha.json" with {
-  type: "json",
+  type: "json"
 };
 
 export default class RectTerrainMapTest extends View<{}, Fullscreen> {
@@ -18,7 +18,8 @@ export default class RectTerrainMapTest extends View<{}, Fullscreen> {
 
     this.zoom = this.transformStore.get("zoom") ?? 1;
 
-    this.container = new Fullscreen(
+    this.container = new Fullscreen({}).appendTo(BodyNode);
+    this.container.root.append(
       new RectTerrainMap(
         256,
         {
@@ -36,7 +37,7 @@ export default class RectTerrainMapTest extends View<{}, Fullscreen> {
         mapData.terrainMap,
         mapData.mapObjects,
       ),
-    ).appendTo(BodyNode);
+    );
 
     this.container.camera.scale = this.zoom;
 

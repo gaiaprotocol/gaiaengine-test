@@ -1,7 +1,7 @@
 import { BodyNode, View } from "@common-module/app";
 import { FPSDisplay, Fullscreen } from "@gaiaengine/2d";
 import { Spine } from "@gaiaengine/2d-spine";
-import { IntegerUtils } from "../../../../ts-module/lib/index.js";
+import { IntegerUtils } from "@common-module/ts";
 
 export default class SpinePerformanceTest extends View<{}, Fullscreen> {
   constructor() {

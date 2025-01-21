@@ -1,4 +1,5 @@
 import { BodyNode, View } from "@common-module/app";
+import { IntegerUtils } from "@common-module/ts";
 import {
   Collidable,
   Collider,
@@ -8,11 +9,10 @@ import {
   FPSDisplay,
   Fullscreen,
   Interval,
+  Joystick,
   Movable,
   Sprite,
 } from "@gaiaengine/2d";
-import { AnalogJoystick } from "@gaiaengine/2d-joystick";
-import { IntegerUtils } from "@common-module/ts";
 
 class Hero extends Movable implements Collidable {
   public colliders: Collider[] = [{
@@ -87,10 +87,10 @@ export default class CollisionTest extends View<{}, Fullscreen> {
     this.container.root.append(
       ...this.heros,
       new Interval(0.1, () => this.createBullet()),
-      new AnalogJoystick(
-        (angle) => this.hero.move(angle, 200),
-        () => this.hero.stop(),
-      ),
+      new Joystick({
+        onMove: (angle) => this.hero.move(angle, 200),
+        onRelease: () => this.hero.stop(),
+      }),
       new CollisionDetector(this.heros, this.bullets, (hero, bullet) => {
         if (hero === this.hero) {
           console.log(hero.globalTransform, bullet.globalTransform);

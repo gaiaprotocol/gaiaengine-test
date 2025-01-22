@@ -18,5 +18,13 @@ export default class DamageTextTest extends View<{}, Fullscreen> {
         new DamageTextNode(x, y, 100),
       );
     });
+
+    this.container.onWindow("touchmove", (event) => {
+      const x = event.touches[0].clientX - this.container.width / 2;
+      const y = event.touches[0].clientY - this.container.height / 2;
+      this.container.root.append(
+        new DamageTextNode(x, y, 100),
+      );
+    });
   }
 }

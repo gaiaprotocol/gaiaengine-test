@@ -4,10 +4,10 @@
   },
   "type": "module",
   "dependencies": {
-    "@common-module/app-components": "^0.1.6",
-    "@gaiaengine/2d": "^0.1.8",
+    "@common-module/app-components": "^0.2.5",
+    "@gaiaengine/2d": "^0.2.5",
     "@gaiaengine/2d-physics": "^0.0.5",
-    "@gaiaengine/2d-spine": "^0.1.8",
+    "@gaiaengine/2d-spine": "^0.2,5",
     "@gaiaengine/dom": "^0.0.2"
   },
   "devDependencies": {

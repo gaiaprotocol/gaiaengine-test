@@ -62,14 +62,13 @@ class Bullet extends Movable implements Collidable {
 
 export default class CollisionTest extends View<{}, Fullscreen> {
   private hero: Hero;
-  private heros: Hero[] = [];
-  private bullets: Bullet[] = [];
+  private collisionDetector: CollisionDetector<Hero, Bullet>;
 
   constructor() {
     super();
     this.container = new Fullscreen({}).appendTo(BodyNode);
 
-    this.heros = Array.from({ length: 100 }, () =>
+    const heros = Array.from({ length: 100 }, () =>
       new Hero(
         IntegerUtils.random(
           -this.container.width / 2,
@@ -82,23 +81,27 @@ export default class CollisionTest extends View<{}, Fullscreen> {
       ));
 
     this.hero = new Hero(0, 0);
-    this.heros.push(this.hero);
+    heros.push(this.hero);
 
     this.container.root.append(
-      ...this.heros,
+      ...heros,
       new Interval(0.1, () => this.createBullet()),
       new Joystick({
         onMove: (angle) => this.hero.move(angle, 200),
         onRelease: () => this.hero.stop(),
       }),
-      new CollisionDetector(this.heros, this.bullets, (hero, bullet) => {
-        if (hero === this.hero) {
-          console.log(hero.globalTransform, bullet.globalTransform);
-          console.log("hero hit");
-        } else {
-          console.log("dummy hero hit");
-        }
-      }),
+      this.collisionDetector = new CollisionDetector(
+        heros,
+        [],
+        (hero, bullet) => {
+          if (hero === this.hero) {
+            console.log(hero.globalTransform, bullet.globalTransform);
+            console.log("hero hit");
+          } else {
+            console.log("dummy hero hit");
+          }
+        },
+      ),
       new FPSDisplay(),
     );
   }
@@ -108,7 +111,8 @@ export default class CollisionTest extends View<{}, Fullscreen> {
       this.container.width / 2,
       IntegerUtils.random(-this.container.height, this.container.height / 2),
     );
-    this.bullets.push(bullet);
+    this.collisionDetector.addObstacle(bullet);
+    bullet.on("remove", () => this.collisionDetector.removeObstacle(bullet));
     this.container.root.append(bullet);
   }
 }

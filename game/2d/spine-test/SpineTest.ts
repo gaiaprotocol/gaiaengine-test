@@ -13,7 +13,7 @@ export default class SpineTest extends View<{}, Fullscreen> {
       spine = new Spine(0, 159, {
         atlas: "/assets/spine/hellboy.atlas",
         skel: "/assets/spine/hellboy.skel",
-        png: "/assets/spine/hellboy.png",
+        texture: "/assets/spine/hellboy.png",
         animation: "idle",
         onAnimationEnd: (animation) => {
           if (animation === "run") spine.animation = "idle";

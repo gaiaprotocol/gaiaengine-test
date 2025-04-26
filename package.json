@@ -4,7 +4,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@common-module/app-components": "^0.2.6",
+    "@commonmodule/app-components": "^0.2.6",
     "@gaiaengine/2d": "^0.2.6",
     "@gaiaengine/2d-physics": "^0.0.5",
     "@gaiaengine/2d-spine": "^0.2.6",

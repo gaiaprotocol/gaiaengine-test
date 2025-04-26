@@ -5,8 +5,8 @@ import {
   Collider,
   ColliderType,
   CollisionDetector,
+  DebugDisplay,
   EllipseNode,
-  FPSDisplay,
   Fullscreen,
   Interval,
   Joystick,
@@ -91,8 +91,6 @@ export default class CollisionTest extends View<{}, Fullscreen> {
         onRelease: () => this.hero.stop(),
       }),
       this.collisionDetector = new CollisionDetector(
-        heros,
-        [],
         (hero, bullet) => {
           if (hero === this.hero) {
             console.log(hero.globalTransform, bullet.globalTransform);
@@ -102,8 +100,13 @@ export default class CollisionTest extends View<{}, Fullscreen> {
           }
         },
       ),
-      new FPSDisplay(),
+      new DebugDisplay(),
     );
+
+    for (const hero of heros) {
+      this.collisionDetector.addSubject(hero);
+      hero.on("remove", () => this.collisionDetector.removeSubject(hero));
+    }
   }
 
   private createBullet() {

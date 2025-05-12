@@ -10,6 +10,7 @@ import SpinePerformanceTestBabylonPixi from "./babylon-pixi/spine-test/SpinePerf
 import SpineTestBabylonPixi from "./babylon-pixi/spine-test/SpineTest.js";
 import SpinePerformanceTestBabylon from "./babylon/spine-test/SpinePerformanceTest.js";
 import SpineTestBabylon from "./babylon/spine-test/SpineTest.js";
+import SpineTestBabylonOld from "./babylon/spine-test/SpineTestOld.js";
 import AnimatedSpriteTestDom from "./dom/image/AnimatedSpriteTest.js";
 import SpriteTestDom from "./dom/image/SpriteTest.js";
 import IndexView from "./IndexView.js";
@@ -40,6 +41,7 @@ import SpineTestThree from "./three/spine-test/SpineTest.js";
 
   Router
     .add("/babylon/spine", SpineTestBabylon)
+    .add("/babylon/spine-old", SpineTestBabylonOld)
     .add("/babylon/spine-performance", SpinePerformanceTestBabylon);
 
   Router

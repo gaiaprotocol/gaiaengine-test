@@ -1,8 +1,12 @@
 /* SpineTest.ts ----------------------------------------------------------- */
 import {
-  ArcRotateCamera,
+  Color3,
+  CubeTexture,
   Engine,
+  FreeCamera,
   HemisphericLight,
+  Mesh,
+  PBRMaterial,
   Scene,
   Vector3,
 } from "@babylonjs/core";
@@ -19,6 +23,7 @@ import {
   Assets,
   Container,
   Renderer as PixiRenderer,
+  Sprite,
   Texture,
   WebGLRenderer,
 } from "pixi.js";
@@ -39,39 +44,68 @@ export default class SpineTest extends View {
   }
 
   private async init(canvas: HTMLCanvasElement) {
-    /* ── Babylon ──────────────────────────────── */
-    this.engine = new Engine(canvas, true, { stencil: true });
+    this.engine = new Engine(canvas, true);
     this.scene = new Scene(this.engine);
 
-    new HemisphericLight("light", new Vector3(0, 1, 0), this.scene);
-    const cam = new ArcRotateCamera(
-      "cam",
-      Math.PI / 2,
-      Math.PI / 3,
-      10,
-      Vector3.Zero(),
+    const camera = new FreeCamera(
+      "camera1",
+      new Vector3(0, 5, -10),
       this.scene,
     );
-    cam.attachControl(canvas, true);
+    camera.setTarget(Vector3.Zero());
+    camera.attachControl(canvas, true);
+
+    const light = new HemisphericLight(
+      "light1",
+      new Vector3(0, 1, 0),
+      this.scene,
+    );
+    light.intensity = 0.7;
+    const sphere = Mesh.CreateSphere("sphere1", 16, 2, this.scene);
+    sphere.position.y = 1;
+    const ground = Mesh.CreateGround("ground1", 6, 6, 2, this.scene);
+
+    const hdrTexture = new CubeTexture(
+      "https://playground.babylonjs.com/textures/environment.dds",
+      this.scene,
+    );
+
+    const envir = new PBRMaterial("envir", this.scene);
+    envir.albedoColor = new Color3(1.0, 0.766, 0.336);
+    envir.reflectivityColor = new Color3(1.0, 0.766, 0.336);
+    envir.microSurface = 1.0; // Let the texture controls the value
+    envir.reflectionTexture = hdrTexture.clone();
+
+    envir.useMicroSurfaceFromReflectivityMapAlpha = true;
+
+    sphere.material = envir;
+    ground.material = envir;
 
     /* ── Pixi ─────────────────────────────────── */
     this.pixi = new WebGLRenderer();
     await this.pixi.init({
-      context: (this.engine as any)._gl, // Babylon이 만든 GL 재사용
-      view: canvas,
+      context: this.engine._gl,
+      canvas: this.engine.getRenderingCanvas()!,
+      backgroundAlpha: 0,
       clearBeforeRender: false,
+      roundPixels: true,
     });
+
     this.stage = new Container();
 
-    /* ── Spine 로드 & 배치 ────────────────────── */
-    this.loadSpine("/assets/spine/hellboy").then(() => {
-      /** 애니메이션 체인: idle → (1초) → run(loop) */
+    /*const sprite = Sprite.from("https://i.imgur.com/FjeLbo3.jpg");
+    sprite.position.set(0, 0);
+    sprite.width = canvas.width;
+    sprite.height = canvas.height;
+    this.stage.addChild(sprite);*/
+
+    /*this.loadSpine("/assets/spine/hellboy").then(() => {
       this.spine.state.setAnimation(0, "idle", true);
 
       setTimeout(() => {
         this.spine.state.setAnimation(0, "run", true);
       }, 1000);
-    });
+    });*/
 
     /* ── 렌더 루프 ────────────────────────────── */
     this.engine.runRenderLoop(() => {

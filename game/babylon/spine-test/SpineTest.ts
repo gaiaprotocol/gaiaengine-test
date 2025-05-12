@@ -1,202 +1,179 @@
-import {
-  ArcRotateCamera,
-  Engine,
-  HemisphericLight,
-  Matrix,
-  MeshBuilder,
-  Scene,
-  StandardMaterial,
-  TransformNode,
-  Vector3,
-} from "@babylonjs/core";
 import { AppRoot, el, View } from "@commonmodule/app";
-import {
-  AnimationState,
-  AnimationStateData,
-  AssetManager,
-  AtlasAttachmentLoader,
-  Matrix4,
-  Physics,
-  PolygonBatcher,
-  Shader,
-  Skeleton,
-  SkeletonBinary,
-  SkeletonRenderer,
-} from "@esotericsoftware/spine-webgl";
 
-/**
- * Babylon.js + spine‑webgl demo that keeps the Babylon depth buffer intact and
- * renders the Spine skeleton with correct alpha so the wire‑frame cube remains
- * visible through the transparent regions.
- */
-export default class SpineTestBabylon extends View {
-  private engine!: Engine;
-  private scene!: Scene;
+import {
+  AssetManager,
+  SkeletonMesh, // Babylon용 런타임에서 가져옵니다
+} from "../BabylonSpineRuntime.js";
+
+import {
+  AtlasAttachmentLoader,
+  SkeletonBinary,
+} from "@esotericsoftware/spine-core";
+
+import * as BABYLON from "@babylonjs/core";
+import "@babylonjs/loaders"; // (glTF 등 다른 로더를 쓰면)
+
+//--------------------------------------------------------------
+// SpineTest – Babylon JS 버전
+//--------------------------------------------------------------
+export default class SpineTest extends View {
+  private engine!: BABYLON.Engine;
+  private scene!: BABYLON.Scene;
+  private camera!: BABYLON.ArcRotateCamera;
 
   private assetManager!: AssetManager;
-  private skeleton?: Skeleton;
-  private state?: AnimationState;
-  private shader?: Shader;
-  private batcher?: PolygonBatcher;
-  private renderer?: SkeletonRenderer;
+  private skeletonMesh?: SkeletonMesh;
 
-  private spineReady = false;
-  private rootNode!: TransformNode;
+  private lastFrameTime = 0;
+  private beforeRenderObserver?: BABYLON.Observer<BABYLON.Scene>;
 
   constructor() {
     super();
+    this.container = el("").appendTo(AppRoot);
 
-    /* ----- Canvas & Babylon bootstrap ----- */
-    this.container = el("div").appendTo(AppRoot);
-    const canvas = el("canvas#spineBabylonCanvas").appendTo(this.container);
-    Object.assign(canvas.htmlElement.style, {
-      position: "absolute",
-      inset: "0",
-      width: "100%",
-      height: "100%",
-    });
+    this.initBabylon();
+    this.loadAssets();
 
-    this.engine = new Engine(canvas.htmlElement, true);
-    this.scene = new Scene(this.engine);
-
-    const camera = new ArcRotateCamera(
-      "camera",
-      Math.PI / 4,
-      Math.PI / 3,
-      1000,
-      Vector3.ZeroReadOnly,
-      this.scene,
-    );
-    camera.attachControl(canvas.htmlElement, true);
-    camera.minZ = 0.1;
-
-    new HemisphericLight("hemi", new Vector3(0, 1, 0), this.scene);
-
-    /* Wire‑frame cube */
-    const cube = MeshBuilder.CreateBox("cube", { size: 400 }, this.scene);
-    const cubeMat = new StandardMaterial("cubeMat", this.scene);
-    cubeMat.wireframe = true;
-    cube.material = cubeMat;
-    cube.position.y = 200;
-
-    /* Root transform for the Spine skeleton */
-    this.rootNode = new TransformNode("spineRoot", this.scene);
-    this.rootNode.scaling = new Vector3(0.5, 0.5, 0.5);
-
-    /* ----- Spine asset loading ----- */
-    const gl = this.engine._gl;
-    this.assetManager = new AssetManager(gl);
-    this.assetManager.loadBinary("/assets/spine/hellboy.skel");
-    this.assetManager.loadTextureAtlas("/assets/spine/hellboy.atlas");
-
-    /* ----- Main loop ----- */
-    this.engine.runRenderLoop(() => this.renderFrame());
-    AppRoot.on("resize", () => this.engine.resize());
+    window.addEventListener("resize", this.handleResize);
   }
 
-  /* ----- Spine setup (called once after assets finish loading) ----- */
-  private initSpine(gl: WebGLRenderingContext): void {
-    const atlas = this.assetManager.require("/assets/spine/hellboy.atlas");
-    const atlasLoader = new AtlasAttachmentLoader(atlas);
+  //--------------------------------------------------------------------------
+  // Babylon 초기화
+  //--------------------------------------------------------------------------
+  private initBabylon() {
+    const canvas = document.createElement("canvas");
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    this.container.htmlElement.append(canvas);
 
-    // Inform Spine that atlas textures are NOT premultiplied.
-    //atlas.pages.forEach((p: any) => p.setPremultipliedAlpha(false));
+    this.engine = new BABYLON.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+      premultipliedAlpha: true,
+    });
 
-    const bin = new SkeletonBinary(atlasLoader);
-    bin.scale = 1;
-    const skelBytes = new Uint8Array(
-      this.assetManager.require("/assets/spine/hellboy.skel"),
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    this.scene = new BABYLON.Scene(this.engine);
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // 투명 배경
+
+    // Arc-Rotate Camera ≈ OrbitControls
+    this.camera = new BABYLON.ArcRotateCamera(
+      "arcCam",
+      0, // alpha
+      BABYLON.Tools.ToRadians(60), // beta
+      800, // radius
+      new BABYLON.Vector3(0, 200, 0),
+      this.scene,
     );
-    const data = bin.readSkeletonData(skelBytes);
+    this.camera.attachControl(canvas, true);
 
-    this.skeleton = new Skeleton(data);
-    const stateData = new AnimationStateData(data);
-    this.state = new AnimationState(stateData);
+    // 라이트(단순 Ambient)
+    new BABYLON.HemisphericLight(
+      "hemi",
+      new BABYLON.Vector3(0, 1, 0),
+      this.scene,
+    );
 
-    this.state.setAnimation(0, "idle", true);
-    this.state.addListener({
-      complete: (e) => {
-        if (e.animation?.name === "run") {
-          this.state!.setAnimation(0, "idle", true);
+    // 렌더 루프
+    this.engine.runRenderLoop(() => this.scene.render());
+  }
+
+  //--------------------------------------------------------------------------
+  // Spine 애셋 로드
+  //--------------------------------------------------------------------------
+  private loadAssets() {
+    const baseUrl = "/assets/spine/";
+    const skeletonFile = "hellboy.skel";
+    const atlasFile = "hellboy.atlas";
+
+    this.assetManager = new AssetManager(baseUrl, undefined, this.scene);
+    this.assetManager.loadBinary(skeletonFile);
+    this.assetManager.loadTextureAtlas(atlasFile);
+
+    const poll = () => {
+      if (this.assetManager.isLoadingComplete()) {
+        this.buildSkeleton(skeletonFile, atlasFile);
+        this.lastFrameTime = Date.now() / 1000;
+
+        // 매 프레임 Spine 갱신
+        this.beforeRenderObserver = this.scene.onBeforeRenderObservable.add(
+          () => {
+            const now = Date.now() / 1000;
+            const delta = now - this.lastFrameTime;
+            this.lastFrameTime = now;
+            if (this.skeletonMesh) this.skeletonMesh.update(delta);
+          },
+        );
+      } else {
+        requestAnimationFrame(poll);
+      }
+    };
+    requestAnimationFrame(poll);
+  }
+
+  //--------------------------------------------------------------------------
+  // SkeletonMesh 생성
+  //--------------------------------------------------------------------------
+  private buildSkeleton(skel: string, atlasFile: string) {
+    const atlas = this.assetManager.require(atlasFile);
+    const atlasLoader = new AtlasAttachmentLoader(atlas);
+    const skelBytes = new Uint8Array(this.assetManager.require(skel));
+
+    const skeletonData = new SkeletonBinary(atlasLoader).readSkeletonData(
+      skelBytes,
+    );
+
+    // Babylon Spine Runtime – 이름, scene, { skeletonData }
+    this.skeletonMesh = new SkeletonMesh("hellboyMesh", this.scene, {
+      skeletonData,
+    });
+    this.skeletonMesh.state.setAnimation(0, "idle", true);
+
+    this.skeletonMesh.state.addListener({
+      complete: (entry: any) => {
+        if (entry.animation?.name === "run") {
+          this.skeletonMesh!.state.setAnimation(0, "idle", true);
         }
       },
     });
-    setTimeout(() => this.state!.setAnimation(0, "run", false), 1000);
 
-    this.shader = Shader.newTwoColoredTextured(gl);
-    this.batcher = new PolygonBatcher(gl);
-    this.renderer = new SkeletonRenderer(gl as any);
-    this.renderer.premultipliedAlpha = false; // ✨ key change
+    // 데모용 큐브(Three.js 예제 그대로)
+    const cube = BABYLON.MeshBuilder.CreateBox(
+      "cube",
+      { size: 400 },
+      this.scene,
+    );
+    const mat = new BABYLON.StandardMaterial("wire", this.scene);
+    mat.wireframe = true;
+    mat.diffuseColor.copyFromFloats(1, 0, 0); // 빨간 와이어프레임
+    cube.material = mat;
 
-    this.spineReady = true;
+    setTimeout(() => {
+      this.skeletonMesh!.state.setAnimation(0, "run", false);
+    }, 1000);
   }
 
-  /* Babylon (column‑major) → Spine (row‑major) */
-  private copyMatrix(src: Matrix, dst: Matrix4): void {
-    const m = src.m;
-    const v = dst.values;
-    v[0] = m[0];
-    v[1] = m[4];
-    v[2] = m[8];
-    v[3] = m[12];
-    v[4] = m[1];
-    v[5] = m[5];
-    v[6] = m[9];
-    v[7] = m[13];
-    v[8] = m[2];
-    v[9] = m[6];
-    v[10] = m[10];
-    v[11] = m[14];
-    v[12] = m[3];
-    v[13] = m[7];
-    v[14] = m[11];
-    v[15] = m[15];
-  }
+  //--------------------------------------------------------------------------
+  // 리사이즈
+  //--------------------------------------------------------------------------
+  private handleResize = () => {
+    this.engine.resize();
+  };
 
-  /* ----- Per‑frame draw ----- */
-  private renderFrame(): void {
-    this.scene.render();
-
-    if (!this.spineReady && this.assetManager.isLoadingComplete()) {
-      this.initSpine(this.engine._gl);
-    }
-    if (!this.spineReady) return;
-
-    this.engine.wipeCaches(true);
-
-    const gl = this.engine._gl;
-    const dt = this.engine.getDeltaTime() / 1000;
-    this.state!.update(dt);
-    this.state!.apply(this.skeleton!);
-    this.skeleton!.updateWorldTransform(Physics.update);
-
-    /* MVP = WORLD * VIEW * PROJECTION */
-    const mvpBabylon = this.rootNode
-      .getWorldMatrix()
-      .multiply(this.scene.getTransformMatrix());
-    const mvp = new Matrix4();
-    this.copyMatrix(mvpBabylon, mvp);
-
-    /* Draw Spine with straight‑alpha blending */
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.depthMask(false); // don't disturb depth buffer
-
-    this.shader!.bind();
-    this.shader!.setUniformi(Shader.SAMPLER, 0);
-    this.shader!.setUniform4x4f(Shader.MVP_MATRIX, mvp.values);
-
-    this.batcher!.begin(this.shader!);
-    this.renderer!.draw(this.batcher!, this.skeleton!);
-    this.batcher!.end();
-    this.shader!.unbind();
-
-    gl.depthMask(true);
-    gl.disable(gl.BLEND);
-  }
-
+  //--------------------------------------------------------------------------
+  // 정리
+  //--------------------------------------------------------------------------
   public close(): void {
+    window.removeEventListener("resize", this.handleResize);
+
+    if (this.beforeRenderObserver) {
+      this.scene.onBeforeRenderObservable.remove(this.beforeRenderObserver);
+    }
+
     this.engine.stopRenderLoop();
+    this.scene.dispose();
     this.engine.dispose();
   }
 }

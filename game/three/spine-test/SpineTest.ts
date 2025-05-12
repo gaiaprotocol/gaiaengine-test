@@ -6,11 +6,13 @@ import {
   SkeletonMesh,
 } from "@esotericsoftware/spine-threejs";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export default class SpineTest extends View {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
+  private controls!: OrbitControls;
 
   private assetManager!: AssetManager;
   private skeletonMesh?: SkeletonMesh;
@@ -41,6 +43,8 @@ export default class SpineTest extends View {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(w, h);
     this.container.htmlElement.append(this.renderer.domElement);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
   }
 
   private loadAssets() {
@@ -87,6 +91,14 @@ export default class SpineTest extends View {
 
     this.scene.add(this.skeletonMesh);
 
+    const geometry = new THREE.BoxGeometry(400, 400, 400);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xff00,
+      wireframe: true,
+    });
+    const cube = new THREE.Mesh(geometry, material);
+    this.scene.add(cube);
+
     setTimeout(() => {
       this.skeletonMesh!.state.setAnimation(0, "run", false);
     }, 1000);
@@ -101,6 +113,7 @@ export default class SpineTest extends View {
 
     if (this.skeletonMesh) this.skeletonMesh.update(delta);
 
+    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
 

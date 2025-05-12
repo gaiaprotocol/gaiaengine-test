@@ -1,30 +1,123 @@
-import { AppRoot, View } from "@commonmodule/app";
-import { Fullscreen } from "@gaiaengine/2d";
-import { Spine } from "@gaiaengine/2d-spine";
+import { AppRoot, el, View } from "@commonmodule/app";
+import {
+  AssetManager,
+  AtlasAttachmentLoader,
+  SkeletonBinary,
+  SkeletonMesh,
+} from "@esotericsoftware/spine-threejs";
+import * as THREE from "three";
 
-export default class SpineTest extends View<{}, Fullscreen> {
+export default class SpineTest extends View {
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+
+  private assetManager!: AssetManager;
+  private skeletonMesh?: SkeletonMesh;
+
+  private lastFrameTime = 0;
+  private animationRequestId = 0;
+
   constructor() {
     super();
 
-    let spine: Spine;
+    this.container = el("").appendTo(AppRoot);
 
-    this.container = new Fullscreen({}).appendTo(AppRoot);
-    this.container.root.append(
-      spine = new Spine(0, 159, {
-        atlas: "/assets/spine/hellboy.atlas",
-        skel: "/assets/spine/hellboy.skel",
-        texture: "/assets/spine/hellboy.png",
-        animation: "idle",
-        onAnimationEnd: (animation) => {
-          if (animation === "run") spine.animation = "idle";
-        },
-      }),
-    );
+    this.initThree();
+    this.loadAssets();
 
-    spine.scale = 0.5;
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  private initThree() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    this.camera = new THREE.PerspectiveCamera(75, w / h, 1, 3000);
+    this.camera.position.set(0, 200, 800);
+
+    this.scene = new THREE.Scene();
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer.setSize(w, h);
+    this.container.htmlElement.append(this.renderer.domElement);
+  }
+
+  private loadAssets() {
+    const baseUrl = "/assets/spine/";
+    const skeletonFile = "hellboy.skel";
+    const atlasFile = "hellboy.atlas";
+
+    this.assetManager = new AssetManager(baseUrl);
+    this.assetManager.loadBinary(skeletonFile);
+    this.assetManager.loadTextureAtlas(atlasFile);
+
+    const poll = () => {
+      if (this.assetManager.isLoadingComplete()) {
+        this.buildSkeleton(skeletonFile, atlasFile);
+        this.lastFrameTime = Date.now() / 1000;
+        this.animate();
+      } else {
+        requestAnimationFrame(poll);
+      }
+    };
+
+    requestAnimationFrame(poll);
+  }
+
+  private buildSkeleton(skel: string, atlasFile: string) {
+    const atlas = this.assetManager.require(atlasFile);
+    const atlasLoader = new AtlasAttachmentLoader(atlas);
+
+    const skeletonBinary = new SkeletonBinary(atlasLoader);
+
+    const skelBytes = new Uint8Array(this.assetManager.require(skel));
+    const skeletonData = skeletonBinary.readSkeletonData(skelBytes);
+
+    this.skeletonMesh = new SkeletonMesh({ skeletonData });
+    this.skeletonMesh.state.setAnimation(0, "idle", true);
+
+    this.skeletonMesh.state.addListener({
+      complete: (entry) => {
+        if (entry.animation?.name === "run") {
+          this.skeletonMesh!.state.setAnimation(0, "idle", true);
+        }
+      },
+    });
+
+    this.scene.add(this.skeletonMesh);
 
     setTimeout(() => {
-      spine.animation = "run";
+      this.skeletonMesh!.state.setAnimation(0, "run", false);
     }, 1000);
+  }
+
+  private animate = () => {
+    this.animationRequestId = requestAnimationFrame(this.animate);
+
+    const now = Date.now() / 1000;
+    const delta = now - this.lastFrameTime;
+    this.lastFrameTime = now;
+
+    if (this.skeletonMesh) this.skeletonMesh.update(delta);
+
+    this.renderer.render(this.scene, this.camera);
+  };
+
+  private handleResize = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h);
+  };
+
+  public close(): void {
+    cancelAnimationFrame(this.animationRequestId);
+    window.removeEventListener("resize", this.handleResize);
+
+    this.container.htmlElement.removeChild(this.renderer.domElement);
+    this.renderer.dispose();
   }
 }

@@ -7,6 +7,7 @@ import DamageTextTest2D from "./2d/text-test/DamageTextTest.js";
 import DomTextTest2D from "./2d/text-test/DomTextTest.js";
 import TextTest2D from "./2d/text-test/TextTest.js";
 import SpinePerformanceTestBabylon from "./babylon/spine-test/SpinePerformanceTest.js";
+import SpinePerformanceTestBabylonOld from "./babylon/spine-test/SpinePerformanceTestOld.js";
 import SpineTestBabylon from "./babylon/spine-test/SpineTest.js";
 import SpineTestBabylonOld from "./babylon/spine-test/SpineTestOld.js";
 import AnimatedSpriteTestDom from "./dom/image/AnimatedSpriteTest.js";
@@ -40,5 +41,6 @@ import SpineTestThree from "./three/spine-test/SpineTest.js";
   Router
     .add("/babylon/spine", SpineTestBabylon)
     .add("/babylon/spine-old", SpineTestBabylonOld)
-    .add("/babylon/spine-performance", SpinePerformanceTestBabylon);
+    .add("/babylon/spine-performance", SpinePerformanceTestBabylon)
+    .add("/babylon/spine-performance-old", SpinePerformanceTestBabylonOld);
 })();

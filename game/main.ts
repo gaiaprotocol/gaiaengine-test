@@ -6,6 +6,8 @@ import BitmapTextTest2D from "./2d/text-test/BitmapTextTest.js";
 import DamageTextTest2D from "./2d/text-test/DamageTextTest.js";
 import DomTextTest2D from "./2d/text-test/DomTextTest.js";
 import TextTest2D from "./2d/text-test/TextTest.js";
+import SpinePerformanceTestBabylonPixi from "./babylon-pixi/spine-test/SpinePerformanceTest.js";
+import SpineTestBabylonPixi from "./babylon-pixi/spine-test/SpineTest.js";
 import SpinePerformanceTestBabylon from "./babylon/spine-test/SpinePerformanceTest.js";
 import SpineTestBabylon from "./babylon/spine-test/SpineTest.js";
 import AnimatedSpriteTestDom from "./dom/image/AnimatedSpriteTest.js";
@@ -33,10 +35,14 @@ import SpineTestThree from "./three/spine-test/SpineTest.js";
     .add("/dom/image/animated-sprite", AnimatedSpriteTestDom);
 
   Router
+    .add("/three/spine", SpineTestThree)
+    .add("/three/spine-performance", SpinePerformanceTestThree);
+
+  Router
     .add("/babylon/spine", SpineTestBabylon)
     .add("/babylon/spine-performance", SpinePerformanceTestBabylon);
 
   Router
-    .add("/three/spine", SpineTestThree)
-    .add("/three/spine-performance", SpinePerformanceTestThree);
+    .add("/babylon-pixi/spine", SpineTestBabylonPixi)
+    .add("/babylon-pixi/spine-performance", SpinePerformanceTestBabylonPixi);
 })();

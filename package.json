@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@babylonjs/core": "^8.7.0",
+    "@babylonjs/loaders": "^8.7.0",
     "@commonmodule/app-components": "^0.2.6",
     "@esotericsoftware/spine-threejs": "^4.2.81",
     "@esotericsoftware/spine-webgl": "^4.2.81",
@@ -12,6 +13,7 @@
     "@gaiaengine/2d-physics": "^0.0.5",
     "@gaiaengine/2d-spine": "^0.2.6",
     "@gaiaengine/dom": "^0.0.2",
+    "stats.js": "^0.17.0",
     "three": "^0.176.0"
   },
   "devDependencies": {

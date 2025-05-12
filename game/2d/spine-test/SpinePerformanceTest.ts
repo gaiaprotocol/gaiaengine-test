@@ -10,7 +10,7 @@ export default class SpinePerformanceTest extends View<{}, Fullscreen> {
     this.container = new Fullscreen({}).appendTo(AppRoot);
     this.container.root.append(new DebugDisplay());
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10000; i++) {
       const x = IntegerUtils.random(-640, 640);
       const y = IntegerUtils.random(-360, 360);
 

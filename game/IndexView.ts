@@ -1,5 +1,5 @@
-import { BodyNode, el, Router, View } from "@common-module/app";
-import { Button, ButtonGroup, ButtonType } from "@common-module/app-components";
+import { AppRoot, el, Router, View } from "@commonmodule/app";
+import { Button, ButtonGroup, ButtonType } from "@commonmodule/app-components";
 
 export default class IndexView extends View {
   constructor() {
@@ -53,6 +53,6 @@ export default class IndexView extends View {
           onClick: () => Router.go("/dom/image/animated-sprite"),
         }),
       ),
-    ).appendTo(BodyNode);
+    ).appendTo(AppRoot);
   }
 }

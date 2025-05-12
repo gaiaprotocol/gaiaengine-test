@@ -1,4 +1,4 @@
-import { BodyNode, View } from "@common-module/app";
+import { AppRoot, View } from "@commonmodule/app";
 import { Fullscreen } from "@gaiaengine/2d";
 import { Spine } from "@gaiaengine/2d-spine";
 
@@ -8,7 +8,7 @@ export default class SpineTest extends View<{}, Fullscreen> {
 
     let spine: Spine;
 
-    this.container = new Fullscreen({}).appendTo(BodyNode);
+    this.container = new Fullscreen({}).appendTo(AppRoot);
     this.container.root.append(
       spine = new Spine(0, 159, {
         atlas: "/assets/spine/hellboy.atlas",

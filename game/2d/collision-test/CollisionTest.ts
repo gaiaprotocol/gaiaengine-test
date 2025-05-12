@@ -1,5 +1,5 @@
-import { BodyNode, View } from "@common-module/app";
-import { IntegerUtils } from "@common-module/ts";
+import { AppRoot, View } from "@commonmodule/app";
+import { IntegerUtils } from "@commonmodule/ts";
 import {
   Collidable,
   Collider,
@@ -66,7 +66,7 @@ export default class CollisionTest extends View<{}, Fullscreen> {
 
   constructor() {
     super();
-    this.container = new Fullscreen({}).appendTo(BodyNode);
+    this.container = new Fullscreen({}).appendTo(AppRoot);
 
     const heros = Array.from({ length: 100 }, () =>
       new Hero(

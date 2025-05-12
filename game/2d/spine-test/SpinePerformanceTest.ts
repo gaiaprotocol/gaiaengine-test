@@ -1,5 +1,5 @@
-import { BodyNode, View } from "@common-module/app";
-import { IntegerUtils } from "@common-module/ts";
+import { AppRoot, View } from "@commonmodule/app";
+import { IntegerUtils } from "@commonmodule/ts";
 import { DebugDisplay, Fullscreen } from "@gaiaengine/2d";
 import { Spine } from "@gaiaengine/2d-spine";
 
@@ -7,7 +7,7 @@ export default class SpinePerformanceTest extends View<{}, Fullscreen> {
   constructor() {
     super();
 
-    this.container = new Fullscreen({}).appendTo(BodyNode);
+    this.container = new Fullscreen({}).appendTo(AppRoot);
     this.container.root.append(new DebugDisplay());
 
     for (let i = 0; i < 1000; i++) {

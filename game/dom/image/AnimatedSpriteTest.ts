@@ -1,11 +1,11 @@
-import { BodyNode, View } from "@common-module/app";
+import { AppRoot, View } from "@commonmodule/app";
 import { AnimatedSprite, Fullscreen } from "@gaiaengine/dom";
 
 export default class AnimatedSpriteTest extends View {
   constructor() {
     super();
 
-    BodyNode.append(
+    AppRoot.append(
       new Fullscreen(
         new AnimatedSprite(
           0,

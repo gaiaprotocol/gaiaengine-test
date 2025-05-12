@@ -79,7 +79,7 @@
     "typechain-types",
     "scripts",
     "service-worker",
-    "legacy-versions",
+    "legacy",
     "webpack.config.ts"
   ],
   "ts-node": {

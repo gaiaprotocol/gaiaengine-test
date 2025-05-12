@@ -1,4 +1,4 @@
-import { BodyNode, View } from "@common-module/app";
+import { AppRoot, View } from "@commonmodule/app";
 import { Fullscreen } from "@gaiaengine/2d";
 import DamageTextNode from "./DamageTextNode.js";
 
@@ -6,12 +6,12 @@ export default class DamageTextTest extends View<{}, Fullscreen> {
   constructor() {
     super();
 
-    this.container = new Fullscreen({}).appendTo(BodyNode);
+    this.container = new Fullscreen({}).appendTo(AppRoot);
     this.container.root.append(
       new DamageTextNode(0, 0, 100),
     );
 
-    this.container.onWindow("mousemove", (event) => {
+    AppRoot.bind(this.container, "mousemove", (event) => {
       const x = event.clientX - this.container.width / 2;
       const y = event.clientY - this.container.height / 2;
       this.container.root.append(
@@ -19,7 +19,7 @@ export default class DamageTextTest extends View<{}, Fullscreen> {
       );
     });
 
-    this.container.onWindow("touchmove", (event) => {
+    AppRoot.bind(this.container, "touchmove", (event) => {
       const x = event.touches[0].clientX - this.container.width / 2;
       const y = event.touches[0].clientY - this.container.height / 2;
       this.container.root.append(

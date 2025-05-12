@@ -1,4 +1,4 @@
-import { Router, SPAInitializer } from "@common-module/app";
+import { Router, SPAInitializer } from "@commonmodule/app";
 import CollisionTest2D from "./2d/collision-test/CollisionTest.js";
 import SpinePerformanceTest2D from "./2d/spine-test/SpinePerformanceTest.js";
 import SpineTest2D from "./2d/spine-test/SpineTest.js";

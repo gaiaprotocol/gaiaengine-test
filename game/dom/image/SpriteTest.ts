@@ -1,11 +1,11 @@
-import { BodyNode, View } from "@common-module/app";
+import { AppRoot, View } from "@commonmodule/app";
 import { Fullscreen, Sprite } from "@gaiaengine/dom";
 
 export default class SpriteTest extends View {
   constructor() {
     super();
 
-    BodyNode.append(
+    AppRoot.append(
       new Fullscreen(
         new Sprite(0, 0, "/assets/run.png", {
           frames: {
